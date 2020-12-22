@@ -10,5 +10,5 @@
 - работа с макетом в Figma;
 - javaScript;
 
-Ссылка на сайт в GitHub Pages: https://sergbfmv.github.io/mesto/index.html
+Ссылка на сайт в GitHub Pages: https://sergbfmv.github.io/mesto/
 
