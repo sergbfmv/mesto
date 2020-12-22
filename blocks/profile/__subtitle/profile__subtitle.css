@@ -3,6 +3,7 @@
   font-size: 18px;
   font-weight: normal;
   line-height: 22px;
+  font-weight: 400;
 }
 
 @media screen and (max-width: 425px) {
