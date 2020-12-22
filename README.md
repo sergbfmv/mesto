@@ -10,5 +10,5 @@
 - работа с макетом в Figma;
 - javaScript;
 
-Ссылка на сайт в GitHub Pages: https://sergbfmv.github.io/russian-travel/
+Ссылка на сайт в GitHub Pages: https://sergbfmv.github.io/mesto/index.html
 
