@@ -1,3 +1,10 @@
 .logo {
   margin: 45px 0 41px;
 }
+
+@media screen and (max-width: 425px) {
+  .logo {
+    width: 103px;
+    height: 24px;
+  }
+}
