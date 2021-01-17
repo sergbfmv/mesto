@@ -1,4 +1,4 @@
-.popup__placeholder {
+.popup__text {
   border: none;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   width: 358px;
@@ -8,15 +8,15 @@
   margin-bottom: 30px;
 }
 
-.popup__placeholder::placeholder {
-  color: #000000;
+.popup__text::placeholder {
+  color: #c4c4c4;
   font-size: 14px;
   line-height: 1.21;
   font-weight: 400;
 }
 
 @media screen and (max-width: 530px) {
-  .popup__placeholder {
+  .popup__text {
       width: 238px;
   }
 }

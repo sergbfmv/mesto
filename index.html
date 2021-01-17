@@ -26,64 +26,54 @@
       <button type="button" class="profile-columns__add-button"></button>
     </section>
     <section class="elements">
-      <div class="element">
-        <img src="images/karachaevsk.jpg" alt="Карачаевск" class="element__photo">
-        <div class="element__label">
-          <h2 class="element__title">Карачаево-Черкессия</h2>
-          <button type="button" class="element__like-button"></button>
-        </div>
-      </div>
-      <div class="element">
-        <img src="images/elbrus.png" alt="Эльбрус" class="element__photo">
-        <div class="element__label">
-          <h2 class="element__title">Эльбрус</h2>
-          <button type="button" class="element__like-button"></button>
-        </div>
-      </div>
-      <div class="element">
-        <img src="images/dombai.jpg" alt="Домбай" class="element__photo">
-        <div class="element__label">
-          <h2 class="element__title">Домбай</h2>
-          <button type="button" class="element__like-button"></button>
-        </div>
-      </div>
-      <div class="element">
-        <img src="images/kazan.jpg" alt="Казань" class="element__photo">
-        <div class="element__label">
-          <h2 class="element__title">Казань</h2>
-          <button type="button" class="element__like-button"></button>
-        </div>
-      </div>
-      <div class="element">
-        <img src="images/ural.jpg" alt="Уральские горы" class="element__photo">
-        <div class="element__label">
-          <h2 class="element__title">Уральские горы</h2>
-          <button type="button" class="element__like-button"></button>
-        </div>
-      </div>
-      <div class="element">
-        <img src="images/Vladimir.jpg" alt="Владимир" class="element__photo">
-        <div class="element__label">
-          <h2 class="element__title">Владимир</h2>
-          <button type="button" class="element__like-button"></button>
-        </div>
-      </div>
     </section>
+  </main>
     <footer class="footer">
       <p class="footer__copyright">&copy; 2020. Сергей Игнатов</p>
     </footer>
-    <section class="popup">
+    <section class="popup popup_type_edit">
       <div class="popup__container">
-        <button class="popup__close-button" type="button"></button>
+        <button class="popup__close-button popup__close-button_type_edit" type="button"></button>
         <h2 class="popup__title">Редактировать профиль</h2>
-        <form class="popup__form" name="edit-form">
+        <form class="popup__form popup__form_type_edit" name="edit-form">
           <input type="text" name="name" placeholder="Жак-Ив Кусто" class="popup__placeholder popup__placeholder_type_name">
           <input type="text" name="info" placeholder="Исследователь океана" class="popup__placeholder popup__placeholder_type_info">
           <input type="submit" name="save" value="Сохранить" class="popup__save-button">
         </form>
       </div>
     </section>
+    <section class="popup popup_type_add">
+      <div class="popup__container">
+        <button class="popup__close-button popup__close-button_type_add" type="button"></button>
+        <h2 class="popup__title">Новое место</h2>
+        <form class="popup__form popup__form_type_add" name="add-form">
+          <input type="text" name="place" placeholder="Название" class="popup__text popup__text_type_title">
+          <input type="text" name="link" placeholder="Ссылка на картинку" class="popup__text popup__text_type_link">
+          <input type="submit" name="save" value="Создать" class="popup__save-button">
+        </form>
+      </div>
+    </section>
+
+
+    <section class="popup popup_type_image">
+      <div class="popup__wrap">
+        <button class="popup__close-button popup__close-button_type_image" type="button"></button>
+        <img src="#" alt="Фотография" class="popup__photo">
+        <h2 class="popup__title-image"></h2>
+      </div>
+    </section>
+
+
+    <template id="element-template">
+      <div class="element">
+        <button type="button" class="element__delete-button"></button>
+        <img class="element__photo">
+        <div class="element__label">
+          <h2 class="element__title"> </h2>
+          <button type="button" class="element__like-button"></button>
+        </div>
+      </div>      
+    </template>
     <script src="./scripts/index.js"></script>
-  </main>
 </body>
 </html>
