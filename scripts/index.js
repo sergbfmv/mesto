@@ -88,7 +88,7 @@ function addCard() {
     const elementPhoto = element.querySelector('.element__photo')
     const elementTitle = element.querySelector('.element__title')
 
-    popupOpenPhoto.addEventListener('click', function() {
+    popupOpenPhoto.addEventListener('click', function() { //попап при клике на фотографию карточки с плавным открытием и закрытием
       openPopup(popupPhoto)
       image.src = elementPhoto.src;
       text.textContent = elementTitle.textContent;
@@ -121,8 +121,30 @@ function cardFormSubmit(event) {
 
   const element = elementTemplate.cloneNode(true) //копирую темплейт для новой карточки
 
+  element.querySelector('.element__like-button').addEventListener('click', function (evt) { //лайк кнопке, обработчик событий
+    evt.target.classList.toggle('element__like-button_active')
+  })
+
+  const deleteButton = element.querySelector('.element__delete-button') //переменная для кнопки делит
+  deleteButton.addEventListener('click', function() { //событие на кнопку
+    const cardItem = deleteButton.closest('.element') //переменная с ближайшим элементом который нужно удалить
+    cardItem.remove() //удаление элемента
+  })
+
   element.querySelector('.element__title').textContent = title.value //значения из формы вносятся в название новой карточки
   element.querySelector('.element__photo').src = link.value //ссылка записывается в карточку
+
+  
+  const popupOpenPhoto = element.querySelector('.element__photo')
+  const elementPhoto = element.querySelector('.element__photo')
+  const elementTitle = element.querySelector('.element__title')
+
+  popupOpenPhoto.addEventListener('click', function() { //попап при клике на фотографию карточки с плавным открытием и закрытием
+    openPopup(popupPhoto)
+    image.src = elementPhoto.src;
+    text.textContent = elementTitle.textContent;
+  });
+
   elements.prepend(element) //добавление карточки в начало
 
   closePopup(popupAdd)
@@ -130,10 +152,6 @@ function cardFormSubmit(event) {
 
 formAddElement.addEventListener('submit', cardFormSubmit); //при нажатии на кнопку добавить срабатывает функция добавления карточки
 
-
-
 const closeButtonPhoto = document.querySelector('.popup__close-button_type_image')
-
-
 
 closeButtonPhoto.addEventListener('click', function() {closePopup(popupPhoto)})

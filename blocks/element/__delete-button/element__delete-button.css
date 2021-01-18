@@ -7,4 +7,10 @@
     background: url(../../../images/Trash.svg);
     border: none;
     cursor: pointer;
+    opacity: 1;
+    transition: opacity 0.3s ease;
 }
+
+.element__delete-button:hover {
+    opacity: 0.5;
+  }
