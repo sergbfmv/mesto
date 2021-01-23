@@ -35,9 +35,13 @@ function removeCard(trash) { // вынесенная функция для уд�
   cardItem.remove() //удаление элемента
 }
 
-function createCard() {
+function createCard(item, itemu) {
   const element = elementTemplate.cloneNode(true) //копирую темплейт для новой карточки
 
+  element.querySelector('.element__photo').src = item.link || itemu.value
+  element.querySelector('.element__title').textContent = item.value || item.name
+  element.alt = 'Фотография'
+  
   element.querySelector('.element__like-button').addEventListener('click', function (evt) { //лайк кнопке, обработчик событий
     evt.target.classList.toggle('element__like-button_active')
   })
@@ -52,6 +56,7 @@ function createCard() {
     openPopup(popupPhoto)
     text.textContent = elementTitle.textContent
     image.src = elementPhoto.src
+    image.alt = 'фотография'
   })
   return element
 }
@@ -65,9 +70,7 @@ function addCardEnd(item) {
 }
 
 initialCards.forEach (card => {
-  const additionalCard = createCard()
-  additionalCard.querySelector('.element__photo').src = card.link
-  additionalCard.querySelector('.element__title').textContent = card.name
+  const additionalCard = createCard(card)
   addCardEnd(additionalCard)
 })
 
@@ -84,13 +87,7 @@ function handleFormSubmit(event) { //форма записывает введе�
 
 function cardFormSubmit(event) {
   event.preventDefault() //сбросить форму
-
-  const addNewCard = createCard()
-
-  addNewCard.querySelector('.element__title').textContent = title.value //значения из формы вносятся в название новой карточки
-  addNewCard.querySelector('.element__photo').src = link.value //ссылка записывается в карточку
-  addNewCard.alt = 'Фотография'
-  addCardStart(addNewCard)
+  addCardStart(createCard(title, link))
   closePopup(popupAdd)
 }
 
@@ -98,23 +95,27 @@ editButton.addEventListener('click', function() {
   openPopup(popupEdit)
   addPlaceholder()
 })
+
 closeButtonEdit.addEventListener('click', function() {closePopup(popupEdit)})
 addButton.addEventListener('click', function() {
   openPopup(popupAdd)
   title.value = ''
   link.value = ''
 })
+
 closeButtonAdd.addEventListener('click', function() {closePopup(popupAdd)})
 popupEdit.addEventListener('mouseup', (event) => {
   if (event.target === event.currentTarget) {
     closePopup(popupEdit)
   }
 })
+
 popupAdd.addEventListener('mouseup', (event) => {
   if (event.target === event.currentTarget) {
     closePopup(popupAdd)
   }
 })
+
 popupPhoto.addEventListener('mouseup', (event) => {
   if (event.target === event.currentTarget) {
     closePopup(popupPhoto)
