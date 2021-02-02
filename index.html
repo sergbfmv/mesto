@@ -29,16 +29,22 @@
     </section>
   </main>
     <footer class="footer">
-      <p class="footer__copyright">&copy; 2020. Сергей Игнатов</p>
+      <p class="footer__copyright">&copy; 2021. Сергей Игнатов</p>
     </footer>
     <section class="popup popup_type_edit">
       <div class="popup__container">
         <button class="popup__close-button popup__close-button_type_edit" type="button"></button>
         <h2 class="popup__title">Редактировать профиль</h2>
-        <form class="popup__form popup__form_type_edit" name="edit-form">
-          <input required type="text" name="name" placeholder="Жак-Ив Кусто" class="popup__placeholder popup__placeholder_type_name">
-          <input required type="text" name="info" placeholder="Исследователь океана" class="popup__placeholder popup__placeholder_type_info">
-          <input type="submit" name="save" value="Сохранить" class="popup__save-button">
+        <form class="popup__form popup__form_type_edit" name="edit-form" novalidate>
+          <label class="popup__form-field">
+            <input required id="name-input" type="text" name="name" placeholder="Жак-Ив Кусто" class="popup__placeholder popup__placeholder_type_name" minlength="2" maxlength="40">
+            <span class="name-input-error popup__placeholder-error"></span>
+          </label>
+          <label class="popup__form-field">
+            <input required id="info-input" type="text" name="info" placeholder="Исследователь океана" class="popup__placeholder popup__placeholder_type_info" minlength="2" maxlength="200">
+            <span class="info-input-error popup__placeholder-error"></span>
+          </label>
+          <button type="submit" name="save" class="popup__save-button">Сохранить</button>
         </form>
       </div>
     </section>
@@ -46,10 +52,16 @@
       <div class="popup__container">
         <button class="popup__close-button popup__close-button_type_add" type="button"></button>
         <h2 class="popup__title">Новое место</h2>
-        <form class="popup__form popup__form_type_add" name="add-form">
-          <input type="text" name="place" placeholder="Название" class="popup__text popup__text_type_title">
-          <input type="url" name="link" placeholder="Ссылка на картинку" class="popup__text popup__text_type_link">
-          <input type="submit" name="save" value="Создать" class="popup__save-button">
+        <form class="popup__form popup__form_type_add" name="add-form" novalidate>
+          <label class="popup__form-field">
+            <input required id="place-input" type="text" name="place" placeholder="Название" class="popup__placeholder popup__text_type_title" minlength="2" maxlength="30">
+            <span class="place-input-error popup__placeholder-error"></span>
+          </label>
+          <label class="popup__form-field">
+            <input required id="link-input" type="url" name="link" placeholder="Ссылка на картинку" class="popup__placeholder popup__text_type_link">
+            <span class="link-input-error popup__placeholder-error"></span>
+          </label>
+          <button type="submit" name="save" class="popup__save-button">Создать</button>
         </form>
       </div>
     </section>
@@ -70,6 +82,7 @@
         </div>
       </div>      
     </template>
+    <script src="./scripts/validate.js"></script>
     <script src="./scripts/array.js"></script>
     <script src="./scripts/index.js"></script>
 </body>

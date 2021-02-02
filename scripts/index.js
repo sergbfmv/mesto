@@ -27,7 +27,6 @@ function addPlaceholder() {
 
 function openPopup(popup) {
   popup.classList.add('popup_opened') //открытие попап, добавление в плейсхолдер имени
-
 }
 
 function removeCard(trash) { // вынесенная функция для удаления карточки
@@ -40,7 +39,7 @@ function createCard(item, itemu) {
 
   element.querySelector('.element__photo').src = item.link || itemu.value
   element.querySelector('.element__title').textContent = item.value || item.name
-  element.alt = 'Фотография'
+  element.querySelector('.element__photo').alt = 'Фотография'
   
   element.querySelector('.element__like-button').addEventListener('click', function (evt) { //лайк кнопке, обработчик событий
     evt.target.classList.toggle('element__like-button_active')
@@ -97,6 +96,25 @@ editButton.addEventListener('click', function() {
 })
 
 closeButtonEdit.addEventListener('click', function() {closePopup(popupEdit)})
+
+document.addEventListener('keydown', function(evt) {
+  if (evt.keyCode === 27) {
+    closePopup(popupEdit)
+  }
+})
+
+document.addEventListener('keydown', function(evt) {
+  if (evt.keyCode === 27) {
+    closePopup(popupAdd)
+  }
+})
+
+document.addEventListener('keydown', function(evt) {
+  if (evt.keyCode === 27) {
+    closePopup(popupPhoto)
+  }
+})
+
 addButton.addEventListener('click', function() {
   openPopup(popupAdd)
   title.value = ''
