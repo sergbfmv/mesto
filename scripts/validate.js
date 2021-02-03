@@ -1,14 +1,23 @@
-const showInputError = (formElement, inputElement, errorMessage) => {
+const allClasses = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__placeholder',
+  submitButtonSelector: '.popup__save-button',
+  inactiveButtonClass: 'popup__save-button_inactive',
+  inputErrorClass: 'popup__placeholder_type_error',
+  errorClass: 'popup__placeholder-error_active'
+}
+
+const showInputError = (formElement, inputElement, errorMessage, allClasses) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`)
-  inputElement.classList.add('popup__placeholder_type_error')
+  inputElement.classList.add(allClasses.inputErrorClass)
   errorElement.textContent = errorMessage
-  errorElement.classList.add('popup__placeholder-error_active')
+  errorElement.classList.add(allClasses.errorClass)
 };
 
-const hideInputError = (formElement, inputElement) => {
+const hideInputError = (formElement, inputElement, allClasses) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`)
-  inputElement.classList.remove('popup__placeholder_type_error')
-  errorElement.classList.remove('popup__placeholder-error_active')
+  inputElement.classList.remove(allClasses.inputErrorClass)
+  errorElement.classList.remove(allClasses.errorClass)
   errorElement.textContent = ''
 }
 
@@ -18,55 +27,47 @@ const hasInvalidInput = (inputList) => {
   })
 }
 
-const isValid = (formElement, inputElement) => {
+const isValid = (formElement, inputElement, allClasses) => {
   if (!inputElement.validity.valid) {
     // Если поле не проходит валидацию, покажем ошибку
-    showInputError(formElement, inputElement, inputElement.validationMessage);
+    showInputError(formElement, inputElement, inputElement.validationMessage, allClasses);
   } else {
     // Если проходит, скроем
-    hideInputError(formElement, inputElement)
+    hideInputError(formElement, inputElement, allClasses)
   }
 }
 
-const setEventListeners = (formElement) => {
-  const inputList = Array.from(formElement.querySelectorAll('.popup__placeholder'))
-  const buttonElement = formElement.querySelector('.popup__save-button')
-  toggleButtonState(inputList, buttonElement)
+const setEventListeners = (formElement, allClasses) => {
+  const inputList = Array.from(formElement.querySelectorAll(allClasses.inputSelector))
+  const buttonElement = formElement.querySelector(allClasses.submitButtonSelector)
+  toggleButtonState(inputList, buttonElement, allClasses)
   inputList.forEach((inputElement) => {
     inputElement.addEventListener('input', () => {
-      isValid(formElement, inputElement)
-      toggleButtonState(inputList, buttonElement)
+      isValid(formElement, inputElement, allClasses)
+      toggleButtonState(inputList, buttonElement, allClasses)
     })
   })
 }
 
-const toggleButtonState = (inputList, buttonElement) => {
+const toggleButtonState = (inputList, buttonElement, allClasses) => {
   // Если есть хотя бы один невалидный инпут
   if (hasInvalidInput(inputList)) {
     // сделай кнопку неактивной
-    buttonElement.classList.add('popup__save-button_inactive');
+    buttonElement.classList.add(allClasses.inactiveButtonClass);
   } else {
     // иначе сделай кнопку активной
-    buttonElement.classList.remove('popup__save-button_inactive');
+    buttonElement.classList.remove(allClasses.inactiveButtonClass);
   }
 }; 
 
-const enebleValidation = () => {
-  const formList = Array.from(document.querySelectorAll('.popup__form'))
+const enebleValidation = (allClasses) => {
+  const formList = Array.from(document.querySelectorAll(allClasses.formSelector))
   formList.forEach((formElement) => {
     formElement.addEventListener('submit', (evt) => {
       evt.preventDefault()
     })
-    setEventListeners(formElement)
+    setEventListeners(formElement, allClasses)
   })
 }
 
-enebleValidation()
-
-formEditElement.addEventListener('submit', function (evt) {
-  // Отменим стандартное поведение по сабмиту
-  evt.preventDefault();
-});
-
-// Вызовем функцию isValid на каждый ввод символа
-formEditInput.addEventListener('input', isValid); 
+enebleValidation(allClasses)

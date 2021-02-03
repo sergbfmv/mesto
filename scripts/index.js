@@ -14,19 +14,27 @@ const text = popupPhoto.querySelector('.popup__title-image')
 const popupAdd = document.querySelector('.popup_type_add')
 const addButton = document.querySelector('.profile-columns__add-button')
 const closeButtonAdd = document.querySelector('.popup__close-button_type_add')
-const title = popupAdd.querySelector('.popup__text_type_title')
-const link = popupAdd.querySelector('.popup__text_type_link')
+const title = popupAdd.querySelector('.popup__placeholder_type_title')
+const link = popupAdd.querySelector('.popup__placeholder_type_link')
 const formAddElement = popupAdd.querySelector('.popup__form_type_add')
 const closeButtonPhoto = document.querySelector('.popup__close-button_type_image')
 const deleteButton = elements.querySelector('.element__delete-button')
+const popups = document.querySelectorAll('.popup')
 
 function addPlaceholder() {
   placeholderName.value = profileName.textContent
   placeholderInfo.value = profileInfo.textContent
 }
 
+function closeByEscape(event) {
+  if (event.key === 'Escape') {
+    closePopup(document.querySelector('.popup_opened'))
+  }
+}
+
 function openPopup(popup) {
   popup.classList.add('popup_opened') //открытие попап, добавление в плейсхолдер имени
+  document.addEventListener('keydown', closeByEscape)
 }
 
 function removeCard(trash) { // вынесенная функция для удаления карточки
@@ -75,6 +83,7 @@ initialCards.forEach (card => {
 
 function closePopup(popup) { // в скобках любое слово, после в функции при вызове попапа мы указываем в скобках какой именно попап
   popup.classList.remove('popup_opened') //удаление попап
+  document.removeEventListener('keydown', closeByEscape)
 }
 
 function handleFormSubmit(event) { //форма записывает введенные значения в плейсхолдер и сохраняет
@@ -84,62 +93,32 @@ function handleFormSubmit(event) { //форма записывает введе�
   closePopup(popupEdit) //в скобках какой именно попап открыть или закрыть
 }
 
-function cardFormSubmit(event) {
+function handleCardFormSubmit(event) {
   event.preventDefault() //сбросить форму
   addCardStart(createCard(title, link))
   closePopup(popupAdd)
 }
+
+popups.forEach((popup) => {
+  popup.addEventListener('click', (evt) => {
+      if (evt.target.classList.contains('popup_opened')) {
+          closePopup(popup)
+      }
+      if (evt.target.classList.contains('popup__close-button')) {
+        closePopup(popup)
+      }
+  })
+})
 
 editButton.addEventListener('click', function() {
   openPopup(popupEdit)
   addPlaceholder()
 })
 
-closeButtonEdit.addEventListener('click', function() {closePopup(popupEdit)})
-
-document.addEventListener('keydown', function(evt) {
-  if (evt.keyCode === 27) {
-    closePopup(popupEdit)
-  }
-})
-
-document.addEventListener('keydown', function(evt) {
-  if (evt.keyCode === 27) {
-    closePopup(popupAdd)
-  }
-})
-
-document.addEventListener('keydown', function(evt) {
-  if (evt.keyCode === 27) {
-    closePopup(popupPhoto)
-  }
-})
-
 addButton.addEventListener('click', function() {
   openPopup(popupAdd)
-  title.value = ''
-  link.value = ''
-})
-
-closeButtonAdd.addEventListener('click', function() {closePopup(popupAdd)})
-popupEdit.addEventListener('mouseup', (event) => {
-  if (event.target === event.currentTarget) {
-    closePopup(popupEdit)
-  }
-})
-
-popupAdd.addEventListener('mouseup', (event) => {
-  if (event.target === event.currentTarget) {
-    closePopup(popupAdd)
-  }
-})
-
-popupPhoto.addEventListener('mouseup', (event) => {
-  if (event.target === event.currentTarget) {
-    closePopup(popupPhoto)
-  }
+  document.getElementById('popup__form').reset()
 })
 
 formElement.addEventListener('submit', handleFormSubmit)
-formAddElement.addEventListener('submit', cardFormSubmit)
-closeButtonPhoto.addEventListener('click', function() {closePopup(popupPhoto)})
+formAddElement.addEventListener('submit', handleCardFormSubmit)
