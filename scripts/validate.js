@@ -40,18 +40,18 @@ const isValid = (formElement, inputElement, allClasses) => {
 const setEventListeners = (formElement, allClasses) => {
   const inputList = Array.from(formElement.querySelectorAll(allClasses.inputSelector))
   const buttonElement = formElement.querySelector(allClasses.submitButtonSelector)
-  toggleButtonState(inputList, buttonElement, allClasses)
+  toggleButtonState(hasInvalidInput(inputList), buttonElement,allClasses)
   inputList.forEach((inputElement) => {
     inputElement.addEventListener('input', () => {
       isValid(formElement, inputElement, allClasses)
-      toggleButtonState(inputList, buttonElement, allClasses)
+      toggleButtonState(hasInvalidInput(inputList), buttonElement,allClasses)
     })
   })
 }
 
-const toggleButtonState = (inputList, buttonElement, allClasses) => {
+const toggleButtonState = (isInvalidInput, buttonElement, allClasses) => {
   // Если есть хотя бы один невалидный инпут
-  if (hasInvalidInput(inputList)) {
+  if (isInvalidInput) { //такая
     // сделай кнопку неактивной
     buttonElement.classList.add(allClasses.inactiveButtonClass);
   } else {

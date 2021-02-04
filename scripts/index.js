@@ -20,6 +20,7 @@ const formAddElement = popupAdd.querySelector('.popup__form_type_add')
 const closeButtonPhoto = document.querySelector('.popup__close-button_type_image')
 const deleteButton = elements.querySelector('.element__delete-button')
 const popups = document.querySelectorAll('.popup')
+const submitButton = popupAdd.querySelector('.popup__save-button')
 
 function addPlaceholder() {
   placeholderName.value = profileName.textContent
@@ -44,10 +45,12 @@ function removeCard(trash) { // вынесенная функция для уд�
 
 function createCard(item, itemu) {
   const element = elementTemplate.cloneNode(true) //копирую темплейт для новой карточки
+  const elementPhoto = element.querySelector('.element__photo')
+  const elementTitle = element.querySelector('.element__title')
 
-  element.querySelector('.element__photo').src = item.link || itemu.value
-  element.querySelector('.element__title').textContent = item.value || item.name
-  element.querySelector('.element__photo').alt = 'Фотография'
+  elementPhoto.src = item.link || itemu.value
+  elementTitle.textContent = item.value || item.name
+  elementPhoto.alt = 'Фотография'
   
   element.querySelector('.element__like-button').addEventListener('click', function (evt) { //лайк кнопке, обработчик событий
     evt.target.classList.toggle('element__like-button_active')
@@ -55,9 +58,6 @@ function createCard(item, itemu) {
 
   const deleteButton = element.querySelector('.element__delete-button') //переменная для кнопки делит
   deleteButton.addEventListener('click', function() {removeCard(deleteButton)})
-
-  const elementPhoto = element.querySelector('.element__photo')
-  const elementTitle = element.querySelector('.element__title')
 
   elementPhoto.addEventListener('click', function() { //попап при клике на фотографию карточки с плавным открытием и закрытием
     openPopup(popupPhoto)
@@ -118,6 +118,7 @@ editButton.addEventListener('click', function() {
 addButton.addEventListener('click', function() {
   openPopup(popupAdd)
   document.getElementById('popup__form').reset()
+  toggleButtonState(hasInvalidInput([title, link]), submitButton, {inactiveButtonClass: 'popup__save-button_inactive'})
 })
 
 formElement.addEventListener('submit', handleFormSubmit)
