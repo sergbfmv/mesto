@@ -1,3 +1,5 @@
+export {allClasses, FormValidator}
+
 const allClasses = {
   formSelector: '.popup__form',
   inputSelector: '.popup__placeholder',
@@ -7,7 +9,77 @@ const allClasses = {
   errorClass: 'popup__placeholder-error_active'
 }
 
-const showInputError = (formElement, inputElement, errorMessage, allClasses) => {
+class FormValidator {
+  constructor(data, formElement) {
+    this._submitButtonSelector = formElement.querySelector(data.submitButtonSelector)
+    this._inactiveButtonClass = data.inactiveButtonClass
+    this._inputErrorClass = data.inputErrorClass
+    this._errorClass = data.errorClass
+    this._formElement = formElement
+    this._inputs = Array.from(formElement.querySelectorAll(data.inputSelector))
+  }
+
+  _showInputError(input) {
+    const errorElement = this._formElement.querySelector(`.${input.id}-error`)
+    input.classList.add(this._inputErrorClass)
+    errorElement.textContent = input.validationMessage
+    errorElement.classList.add(this._errorClass)
+  }
+
+  _hideInputError(input) {
+    const errorElement = this._formElement.querySelector(`.${input.id}-error`)
+    input.classList.remove(this._inputErrorClass)
+    errorElement.classList.remove(this._errorClass)
+    errorElement.textContent = ''
+  }
+
+  _isValid(input) {
+      if (!input.validity.valid) {
+        // Если поле не проходит валидацию, покажем ошибку
+        this._showInputError(input)
+      } else {
+        // Если проходит, скроем
+        this._hideInputError(input)
+      }
+  }
+
+  _hasInvalidInput() {
+    return this._inputs.some((inputElement) => {
+      return !inputElement.validity.valid
+    })
+  }
+
+  _toggleButtonState() {
+      // Если есть хотя бы один невалидный инпут
+      if (this._hasInvalidInput()) {
+        // сделай кнопку неактивной
+        this._submitButtonSelector.classList.add(this._inactiveButtonClass);
+      } else {
+        // иначе сделай кнопку активной
+        this._submitButtonSelector.classList.remove(this._inactiveButtonClass);
+      }
+  }
+
+  _setEventListeners() {
+    this._formElement.addEventListener('submit', (event) => {
+      event.preventDefault()
+      this._toggleButtonState()
+    })
+    this._inputs.forEach((inputElement) => {
+      inputElement.addEventListener('input', () => {
+        this._isValid(inputElement)
+        this._toggleButtonState()
+      })
+    })
+  }
+
+  enableValidation() {
+    this._toggleButtonState()
+    this._setEventListeners()
+  }
+}
+
+/*const showInputError = (formElement, inputElement, errorMessage, allClasses) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`)
   inputElement.classList.add(allClasses.inputErrorClass)
   errorElement.textContent = errorMessage
@@ -58,7 +130,7 @@ const toggleButtonState = (isInvalidInput, buttonElement, allClasses) => {
     // иначе сделай кнопку активной
     buttonElement.classList.remove(allClasses.inactiveButtonClass);
   }
-}; 
+}
 
 const enebleValidation = (allClasses) => {
   const formList = Array.from(document.querySelectorAll(allClasses.formSelector))
@@ -71,3 +143,4 @@ const enebleValidation = (allClasses) => {
 }
 
 enebleValidation(allClasses)
+*/
