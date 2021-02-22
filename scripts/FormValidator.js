@@ -53,10 +53,12 @@ class FormValidator {
       // Если есть хотя бы один невалидный инпут
       if (this._hasInvalidInput()) {
         // сделай кнопку неактивной
-        this._submitButtonSelector.classList.add(this._inactiveButtonClass);
+        this._submitButtonSelector.classList.add(this._inactiveButtonClass)
+        this._submitButtonSelector.disabled = true;
       } else {
         // иначе сделай кнопку активной
-        this._submitButtonSelector.classList.remove(this._inactiveButtonClass);
+        this._submitButtonSelector.classList.remove(this._inactiveButtonClass)
+        this._submitButtonSelector.disabled = false
       }
   }
 

@@ -17,6 +17,10 @@ const link = popupAdd.querySelector('.popup__placeholder_type_link')
 const formAddElement = popupAdd.querySelector('.popup__form_type_add')
 const popups = document.querySelectorAll('.popup')
 const forms = document.querySelectorAll('.popup__form')
+const imagePopup = document.querySelector('.popup_type_image')
+const imagePopupPicture = imagePopup.querySelector('.popup__photo')
+const imagePopupCaption = imagePopup.querySelector('.popup__title-image')
+const submitButton = popupAdd.querySelector('.popup__save-button')
 
 function addPlaceholder() {
   placeholderName.value = profileName.textContent
@@ -34,8 +38,8 @@ function openPopup(popup) {
   document.addEventListener('keydown', closeByEscape)
 }
 
-function createCard(card, cardSelector) {
-  return new Card(card, cardSelector)
+function createCard(item) {
+  return new Card(item, '.element-template_type_card', handleCardClick).generateCard()
 }
 
 function addCardStart(card) {
@@ -60,9 +64,15 @@ function handleFormSubmit(event) { //форма записывает введе�
 
 function handleCardFormSubmit(event) {
   event.preventDefault() //сбросить форму
-  const addingCard = new Card({name: title.value, link: link.value}, '.element-template_type_card').generateCard()
+  const addingCard = createCard({name: title.value, link: link.value})
   addCardStart(addingCard)
   closePopup(popupAdd)
+}
+
+function handleCardClick(name, link) {
+  imagePopupPicture.src = link
+  imagePopupCaption.textContent = name
+  openPopup(imagePopup)
 }
 
 popups.forEach((popup) => {
@@ -83,7 +93,9 @@ editButton.addEventListener('click', function() {
 
 addButton.addEventListener('click', function() {
   openPopup(popupAdd)
-  document.getElementById('popup__form').reset()
+  formAddElement.reset()
+  submitButton.disabled = true
+  submitButton.classList.add('popup__save-button_inactive')
 })
 
 forms.forEach((form) => {
@@ -95,7 +107,6 @@ formElement.addEventListener('submit', handleFormSubmit)
 formAddElement.addEventListener('submit', handleCardFormSubmit)
 
 initialCards.forEach((item) => {
-  const card = new Card(item, '.element-template_type_card')
-  const cardElement = card.generateCard()
+  const cardElement = createCard(item)
   elements.append(cardElement)
 })

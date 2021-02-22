@@ -1,8 +1,9 @@
 export default class Card {
-  constructor(data, cardSelector) {
+  constructor(data, cardSelector, handleCardClick) {
     this._text = data.name
     this._image = data.link
     this._cardSelector = cardSelector
+    this._handleCardClick = handleCardClick
   }
 
   _getTemplate() {
@@ -17,9 +18,11 @@ export default class Card {
 
     generateCard() {
     this._element = this._getTemplate()
+    this._cardImage = this._element.querySelector('.element__photo')
     this._setEventListeners()
 
-    this._element.querySelector('.element__photo').src = this._image
+    this._cardImage.src = this._image
+    this._cardImage.alt = "Фотография - " + this._text;
     this._element.querySelector('.element__title').textContent = this._text
 
     return this._element
@@ -32,21 +35,8 @@ export default class Card {
     this._element.querySelector('.element__like-button').addEventListener('click', (evt) => {
       this._handleLikeCard(evt);
     })
-    this._element.querySelector('.element__photo').addEventListener('click', () => {
-      this._handlePopupPhoto()
-    })
-    document.querySelector('.popup__close-button_type_image').addEventListener('click', () => {
-      this._handleClosePopupPhoto()
-    })
-    document.addEventListener('keydown', (evt) => {
-      if (evt.key === 'Escape') {
-        this._handleClosePopupPhoto()
-      }
-    })
-    document.querySelector('.popup_type_image').addEventListener('click', (evt) => {
-      if (evt.target.classList.contains('popup_opened')) {
-        this._handleClosePopupPhoto()
-      }
+    this._cardImage.addEventListener('click', () => {
+      this._handleCardClick(this._text, this._image)
     })
   }
 
@@ -56,16 +46,5 @@ export default class Card {
 
   _handleLikeCard(evt) {
     evt.target.classList.toggle('element__like-button_active')
-  }
-
-  _handlePopupPhoto() {
-    document.querySelector('.popup_type_image').classList.add('popup_opened')
-    document.querySelector('.popup__photo').src = this._image
-    document.querySelector('.popup__photo').alt = 'Фотография'
-    document.querySelector('.popup__title-image').textContent = this._text
-  }
-
-  _handleClosePopupPhoto() {
-    document.querySelector('.popup_type_image').classList.remove('popup_opened')
   }
 }
