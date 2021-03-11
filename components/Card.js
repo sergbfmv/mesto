@@ -22,7 +22,7 @@ export default class Card {
     this._setEventListeners()
 
     this._cardImage.src = this._image
-    this._cardImage.alt = "Фотография - " + this._text;
+    this._cardImage.alt = "Фотография - " + this._text
     this._element.querySelector('.element__title').textContent = this._text
 
     return this._element
