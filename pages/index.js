@@ -28,13 +28,10 @@ const imagePopupPicture = imagePopup.querySelector('.popup__photo')
 const imagePopupCaption = imagePopup.querySelector('.popup__title-image')
 const submitButton = popupAdd.querySelector('.popup__save-button')
 
-function handleCardClick(name, link) {
-  imagePopupPicture.src = link
-  imagePopupCaption.textContent = name
-}
-
 function createCard(item) {
-  return new Card (item, '.element-template_type_card', handleCardClick).generateCard()
+  return new Card (item, '.element-template_type_card',  (text, image) => {
+    popupImage.open(text, image)
+  }).generateCard()
 }
 
 forms.forEach((form) => {
@@ -43,48 +40,44 @@ forms.forEach((form) => {
 })
 
 const popupImage = new PopupWithImage ('.popup_type_image')
+popupImage.setEventListeners()
 
 const cardsList = new Section ({
   items: initialCards,
   renderer: (item) => {
-    const card = new Card (item, '.element-template_type_card', (text, image) => {
-      popupImage.open(text, image)
-    })
-    const cardElement = card.generateCard();
-    cardsList.addItem(cardElement)
+    const card = createCard(item)
+    cardsList.addItem(card)
   },
 }, '.elements')
 cardsList.renderItems()
 
-const addPopup = new PopupWithForm ('.popup_type_add', () => {
-  const card = new Card ({name: title.value, link: link.value}, '.element-template_type_card', (text, image) => {
-    popupImage.open(text, image)
-  })
-  const cardElement = card.generateCard();
-  cardsList.addItemStart(cardElement)
+const addPopup = new PopupWithForm ('.popup_type_add', (placeholders) => {
+  const card = createCard(placeholders)
+  cardsList.addItemStart(card)
   addPopup.close()
 })
 
+addPopup.setEventListeners()
 addButton.addEventListener('click', function() {
   addPopup.open()
-  addPopup.setEventListeners()
   submitButton.disabled = true
   submitButton.classList.add('popup__save-button_inactive')
 })
 
 const user = new UserInfo ({name: '.profile__title', info: '.profile__subtitle'})
 
+const editPopup = new PopupWithForm ('.popup_type_edit', (placeholders) => {
+  user.setUserInfo(placeholders.name, placeholders.info)
+  editPopup.close()
+})
+
+editPopup.setEventListeners()
 editButton.addEventListener('click', () => {
   editPopup.open()
   placeholderName.value = user.getUserInfo().name
   placeholderInfo.value = user.getUserInfo().info
-  editPopup.setEventListeners()
 })
 
-const editPopup = new PopupWithForm ('.popup_type_edit', () => {
-  user.setUserInfo(placeholderName.value, placeholderInfo.value)
-  editPopup.close()
-})
 
 
 

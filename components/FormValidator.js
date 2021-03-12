@@ -11,7 +11,7 @@ const allClasses = {
 
 class FormValidator {
   constructor(data, formElement) {
-    this._submitButtonSelector = formElement.querySelector(data.submitButtonSelector)
+    this._submitButton = formElement.querySelector(data.submitButtonSelector)
     this._inactiveButtonClass = data.inactiveButtonClass
     this._inputErrorClass = data.inputErrorClass
     this._errorClass = data.errorClass
@@ -53,12 +53,12 @@ class FormValidator {
       // Если есть хотя бы один невалидный инпут
       if (this._hasInvalidInput()) {
         // сделай кнопку неактивной
-        this._submitButtonSelector.classList.add(this._inactiveButtonClass)
-        this._submitButtonSelector.disabled = true;
+        this._submitButton.classList.add(this._inactiveButtonClass)
+        this._submitButton.disabled = true;
       } else {
         // иначе сделай кнопку активной
-        this._submitButtonSelector.classList.remove(this._inactiveButtonClass)
-        this._submitButtonSelector.disabled = false
+        this._submitButton.classList.remove(this._inactiveButtonClass)
+        this._submitButton.disabled = false
       }
   }
 
@@ -67,10 +67,16 @@ class FormValidator {
       event.preventDefault()
       this._toggleButtonState()
     })
-    this._inputs.forEach((inputElement) => {
-      inputElement.addEventListener('input', () => {
-        this._isValid(inputElement)
-        this._toggleButtonState()
+    this._formElement.addEventListener('reset', () => {
+      this._inputs.forEach((inputElement) => {
+          this._hideInputError(inputElement)
+          this._toggleButtonState()
+      })
+    })
+      this._inputs.forEach((inputElement) => {
+        inputElement.addEventListener('input', () => {
+          this._isValid(inputElement)
+          this._toggleButtonState()
       })
     })
   }

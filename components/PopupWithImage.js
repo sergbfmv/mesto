@@ -7,9 +7,8 @@ export default class PopupWithImage extends Popup {
 
   open(text, image) {
     super.open()
-    document.querySelector(".popup__photo").src = image
-    document.querySelector(".popup__title-image").textContent = text
-    document.querySelector(".popup__photo").alt = "Фотография - " + text
-    super.setEventListeners()
+    this._popup.querySelector(".popup__photo").src = image
+    this._popup.querySelector(".popup__title-image").textContent = text
+    this._popup.querySelector(".popup__photo").alt = "Фотография - " + text
   }
 }
