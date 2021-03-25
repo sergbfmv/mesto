@@ -1,4 +1,5 @@
 .element__delete-button {
+    display: block;
     position: absolute;
     top: 24px;
     right: 16px;

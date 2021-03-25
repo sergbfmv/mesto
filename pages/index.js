@@ -3,17 +3,26 @@ import Card from '../components/Card.js'
 import {initialCards} from '../scripts/array.js'
 import {allClasses, FormValidator} from '../components/FormValidator.js'
 import Section from '../components/Section.js'
-import Popup from '../components/Popup.js'
 import PopupWithImage from '../components/PopupWithImage.js'
 import PopupWithForm from '../components/PopupWithForm.js'
 import UserInfo from '../components/UserInfo.js'
+import Api from '../components/Api.js'
+import PopupRemove from '../components/PopupRemove.js'
 
+const api = new Api({
+  baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-21',
+  headers: {
+    authorization: '7ed380e6-68b3-4cb5-a4fb-d8eaa47229a6',
+    'Content-Type': 'application/json'
+  }
+})
 const editButton = document.querySelector('.profile__edit-button')
 const popupEdit = document.querySelector('.popup_type_edit')
 const placeholderName = popupEdit.querySelector('.popup__placeholder_type_name')
 const placeholderInfo = popupEdit.querySelector('.popup__placeholder_type_info')
 const profileName = document.querySelector('.profile__title')
 const profileInfo = document.querySelector('.profile__subtitle')
+const profileAvatar =document.querySelector('.profile__avatar')
 const formElement = popupEdit.querySelector('.popup__form_type_edit')
 const elements = document.querySelector('.elements')
 const popupAdd = document.querySelector('.popup_type_add')
@@ -27,11 +36,54 @@ const imagePopup = document.querySelector('.popup_type_image')
 const imagePopupPicture = imagePopup.querySelector('.popup__photo')
 const imagePopupCaption = imagePopup.querySelector('.popup__title-image')
 const submitButton = popupAdd.querySelector('.popup__save-button')
+const editAvatar = document.querySelector('.profile__avatar')
+const avatarLink = document.querySelector('.popup__placeholder_type_avatar-link')
+
+api.getProfileInfo()
+  .then((result) => {
+    profileName.textContent = result.name
+    profileInfo.textContent = result.about
+    profileAvatar.src = result.avatar
+})
+
+api.getInitialCards()
+  .then((data) => {
+    const cardsList = new Section ({
+      items: data,
+      renderer: (item) => {
+        const card = createCard(item)
+        const addCard = card.generateCard(item, profileName)
+        addCard.querySelector('.element__like-counter').textContent = item.likes.length
+        cardsList.addItem(addCard)
+      },
+    }, '.elements')
+  cardsList.renderItems()
+})
+
+const confirmPopup = new PopupRemove('.popup_type_remove', () => {
+  confirmPopup.close()
+}, api)
+
+const editAvatarPopup = new PopupWithForm('.popup_type_edit-avatar', (inputs) => {
+  api.changeAvatar(inputs.link)
+    .then((data) => {
+      profileAvatar.src = data.avatar
+    })
+    .finally(() => {
+      editAvatarPopup.renderLoading(false)
+    })
+  editAvatarPopup.close()
+})
+
+editAvatarPopup.setEventListeners()
+editAvatar.addEventListener('click', () => {
+  editAvatarPopup.open()
+})
 
 function createCard(item) {
   return new Card (item, '.element-template_type_card',  (text, image) => {
     popupImage.open(text, image)
-  }).generateCard()
+  },confirmPopup, api)
 }
 
 forms.forEach((form) => {
@@ -42,19 +94,17 @@ forms.forEach((form) => {
 const popupImage = new PopupWithImage ('.popup_type_image')
 popupImage.setEventListeners()
 
-const cardsList = new Section ({
-  items: initialCards,
-  renderer: (item) => {
-    const card = createCard(item)
-    cardsList.addItem(card)
-  },
-}, '.elements')
-cardsList.renderItems()
-
 const addPopup = new PopupWithForm ('.popup_type_add', (placeholders) => {
   const card = createCard(placeholders)
-  cardsList.addItemStart(card)
+  api.createCard(placeholders)
+  .then((data) => {
+    const addCard = card.generateCard(data, profileName)
+  document.querySelector('.elements').prepend(addCard)
   addPopup.close()
+  })
+  .finally(() => {
+    addPopup.renderLoading(false)
+  })
 })
 
 addPopup.setEventListeners()
@@ -68,6 +118,10 @@ const user = new UserInfo ({name: '.profile__title', info: '.profile__subtitle'}
 
 const editPopup = new PopupWithForm ('.popup_type_edit', (placeholders) => {
   user.setUserInfo(placeholders.name, placeholders.info)
+  api.editProfileInfo({name: placeholderName.value, about: placeholderInfo.value})
+  .finally(() => {
+    editPopup.renderLoading(false)
+  })
   editPopup.close()
 })
 
@@ -77,27 +131,3 @@ editButton.addEventListener('click', () => {
   placeholderName.value = user.getUserInfo().name
   placeholderInfo.value = user.getUserInfo().info
 })
-
-
-
-
-
-/*function addCardStart(card) {
-  elements.prepend(card) //добавление карточки в начало
-}*/
-
-/*function addCardEnd(item) {
-  elements.append(item) // добавляем элемент в конец секции, с изменениями от пользователя
-}*/
-
-/*function handleFormSubmit(event) { //форма записывает введенные значения в плейсхолдер и сохраняет
-  event.preventDefault()
-  profileName.textContent = placeholderName.value
-  profileInfo.textContent = placeholderInfo.value
-}*/
-
-/*function handleCardFormSubmit(event) {
-  event.preventDefault() //сбросить форму
-  const addingCard = createCard({name: title.value, link: link.value})
-  addCardStart(addingCard)
-}*/

@@ -14,6 +14,7 @@
     <section class="profile-columns">
       <div class="profile">
         <img src="<%=require('../images/avatar.jpg')%>" alt="Аватар" class="profile__avatar">
+        <img src="<%=require('../images/edit.svg')%>" alt="Правка" class="profile__edit-icon">
         <div class="profile__info">
           <div class="profile__header">
             <h1 class="profile__title">Жак-Ив Кусто</h1>
@@ -71,15 +72,40 @@
         <h2 class="popup__title-image"></h2>
       </div>
     </section>
+    <section class="popup popup_type_remove">
+      <div class="popup__container popup__container_type_remove">
+        <h2 class="popup__title">Вы уверены?</h2>
+        <form class="popup__delete-form">
+          <button type="submit" name="delete" class="popup__confirm-button">Да</button>
+        </form>
+        <button class="popup__close-button popup__close-button_type_edit" type="button"></button>
+      </div>
+    </section>
+    <section class="popup popup_type_edit-avatar">
+      <div class="popup__container popup__container_type_edit-avatar">
+        <button class="popup__close-button popup__close-button_type_edit-avatar" type="button"></button>
+        <h2 class="popup__title">Обновить аватар</h2>
+        <form class="popup__form popup__form_type_edit-avatar" id="popup__form" name="edit-form" novalidate>
+          <label class="popup__form-field">
+            <input required id="place-input" type="url" name="link" placeholder="Ссылка на аватар" class="popup__placeholder popup__placeholder_type_avatar-link" minlength="2" maxlength="200">
+            <span class="place-input-error popup__placeholder-error"></span>
+          </label>
+          <button type="submit" name="save" class="popup__save-button">Сохранить</button>
+        </form>
+      </div>
+    </section>
     <template class="element-template element-template_type_card">
       <div class="element">
         <button type="button" class="element__delete-button"></button>
         <img src="#" alt="Фотография" class="element__photo">
         <div class="element__label">
           <h2 class="element__title"> </h2>
-          <button type="button" class="element__like-button"></button>
+          <div class="element__like">
+            <button type="button" class="element__like-button"></button>
+            <p class="element__like-counter"> 0 </p>
+          </div>
         </div>
-      </div>      
+      </div>
     </template>
 </body>
 </html>
