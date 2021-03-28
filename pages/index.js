@@ -1,7 +1,8 @@
-import '../pages/index.css'; // добавьте импорт главного файла стилей 
+import './index.css'; // добавьте импорт главного файла стилей 
 import Card from '../components/Card.js'
 import {initialCards} from '../scripts/array.js'
-import {allClasses, FormValidator} from '../components/FormValidator.js'
+import FormValidator from '../components/FormValidator.js'
+import {allClasses} from '../scripts/constants.js'
 import Section from '../components/Section.js'
 import PopupWithImage from '../components/PopupWithImage.js'
 import PopupWithForm from '../components/PopupWithForm.js'
@@ -23,106 +24,136 @@ const placeholderInfo = popupEdit.querySelector('.popup__placeholder_type_info')
 const profileName = document.querySelector('.profile__title')
 const profileInfo = document.querySelector('.profile__subtitle')
 const profileAvatar =document.querySelector('.profile__avatar')
-const formElement = popupEdit.querySelector('.popup__form_type_edit')
+const formEdit = popupEdit.querySelector('.popup__form_type_edit')
 const elements = document.querySelector('.elements')
 const popupAdd = document.querySelector('.popup_type_add')
 const addButton = document.querySelector('.profile-columns__add-button')
 const title = popupAdd.querySelector('.popup__placeholder_type_title')
 const link = popupAdd.querySelector('.popup__placeholder_type_link')
-const formAddElement = popupAdd.querySelector('.popup__form_type_add')
+const formAdd = popupAdd.querySelector('.popup__form_type_add')
 const popups = document.querySelectorAll('.popup')
-const forms = document.querySelectorAll('.popup__form')
 const imagePopup = document.querySelector('.popup_type_image')
 const imagePopupPicture = imagePopup.querySelector('.popup__photo')
 const imagePopupCaption = imagePopup.querySelector('.popup__title-image')
 const submitButton = popupAdd.querySelector('.popup__save-button')
 const editAvatar = document.querySelector('.profile__avatar')
 const avatarLink = document.querySelector('.popup__placeholder_type_avatar-link')
+const formAvatar = document.querySelector('.popup__form_type_edit-avatar')
+const user = new UserInfo({name: '.profile__title', info: '.profile__subtitle', avatar: '.profile__avatar'})
+let userId = ''
+let cardsList = ''
+
+const validatorFormAdd = new FormValidator(allClasses, formAdd)
+validatorFormAdd.enableValidation()
+
+const validatorFormEdit = new FormValidator(allClasses, formEdit)
+validatorFormEdit.enableValidation()
+
+const validatorFormAvatar = new FormValidator(allClasses, formAvatar)
+validatorFormAvatar.enableValidation()
+
+const popupImage = new PopupWithImage ('.popup_type_image')
+popupImage.setEventListeners()
 
 api.getProfileInfo()
-  .then((result) => {
-    profileName.textContent = result.name
-    profileInfo.textContent = result.about
-    profileAvatar.src = result.avatar
+  .then((data) => {
+    user.setUserInfo(data.name, data.about, data.avatar)
+    userId = data._id
 })
+  .catch(err => Promise.reject(err))
 
 api.getInitialCards()
   .then((data) => {
-    const cardsList = new Section ({
+     cardsList = new Section({
       items: data,
       renderer: (item) => {
-        const card = createCard(item)
-        const addCard = card.generateCard(item, profileName)
-        addCard.querySelector('.element__like-counter').textContent = item.likes.length
+        const card = createCard(item, userId)
+        const addCard = card.generateCard(item)
         cardsList.addItem(addCard)
       },
     }, '.elements')
   cardsList.renderItems()
 })
+.catch(err => Promise.reject(err))
 
-const confirmPopup = new PopupRemove('.popup_type_remove', () => {
-  confirmPopup.close()
+const confirmPopup = new PopupRemove('.popup_type_remove', (id, card) => {
+  api.removeCard(id)
+    .then((data) => {
+      confirmPopup.close()
+      card.removeCard()
+    })
+    .catch(err => Promise.reject(err))
 }, api)
 
 const editAvatarPopup = new PopupWithForm('.popup_type_edit-avatar', (inputs) => {
   api.changeAvatar(inputs.link)
     .then((data) => {
       profileAvatar.src = data.avatar
+      editAvatarPopup.close()
     })
+    .catch(err => Promise.reject(err))
     .finally(() => {
       editAvatarPopup.renderLoading(false)
     })
-  editAvatarPopup.close()
 })
 
 editAvatarPopup.setEventListeners()
 editAvatar.addEventListener('click', () => {
   editAvatarPopup.open()
+  validatorFormAvatar.disableSubmitButton()
 })
 
-function createCard(item) {
-  return new Card (item, '.element-template_type_card',  (text, image) => {
-    popupImage.open(text, image)
-  },confirmPopup, api)
+function handleLikeCard(card) {
+  api.addLike(card.getId())
+    .then(data => card.setLikesInfo(data))
+    .catch(err => Promise.reject(err));
 }
 
-forms.forEach((form) => {
-	const validator = new FormValidator(allClasses, form)
-	validator.enableValidation()
-})
+function handleDeleteLike(card) {
+  api.deleteLike(card.getId())
+    .then(data => card.setLikesInfo(data))
+    .catch(err => Promise.reject(err));
+} 
 
-const popupImage = new PopupWithImage ('.popup_type_image')
-popupImage.setEventListeners()
+function createCard(item, id) {
+  return new Card (item, '.element-template_type_card',  (text, image) => {
+    popupImage.open(text, image)
+  },(id, element, card) => {
+    confirmPopup.open()
+    confirmPopup.setEventListeners(id, element, card)
+  }, id, handleLikeCard, handleDeleteLike)
+}
 
 const addPopup = new PopupWithForm ('.popup_type_add', (placeholders) => {
-  const card = createCard(placeholders)
+  const card = createCard(placeholders, userId)
   api.createCard(placeholders)
-  .then((data) => {
-    const addCard = card.generateCard(data, profileName)
-  document.querySelector('.elements').prepend(addCard)
-  addPopup.close()
+    .then((data) => {
+      const addCard = card.generateCard(data)
+      cardsList.addItemStart(addCard)
+      addPopup.close()
   })
-  .finally(() => {
-    addPopup.renderLoading(false)
+    .catch(err => Promise.reject(err))
+    .finally(() => {
+      addPopup.renderLoading(false)
   })
 })
 
 addPopup.setEventListeners()
 addButton.addEventListener('click', function() {
   addPopup.open()
-  submitButton.disabled = true
-  submitButton.classList.add('popup__save-button_inactive')
+  validatorFormAdd.disableSubmitButton()
 })
 
-const user = new UserInfo ({name: '.profile__title', info: '.profile__subtitle'})
-
 const editPopup = new PopupWithForm ('.popup_type_edit', (placeholders) => {
-  user.setUserInfo(placeholders.name, placeholders.info)
   api.editProfileInfo({name: placeholderName.value, about: placeholderInfo.value})
+  .then((data) => {
+    user.setUserInfo(placeholders.name, placeholders.info)
+    editPopup.close()
+  })
+  .catch(err => Promise.reject(err))
   .finally(() => {
     editPopup.renderLoading(false)
   })
-  editPopup.close()
 })
 
 editPopup.setEventListeners()

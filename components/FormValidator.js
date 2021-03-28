@@ -1,15 +1,4 @@
-export {allClasses, FormValidator}
-
-const allClasses = {
-  formSelector: '.popup__form',
-  inputSelector: '.popup__placeholder',
-  submitButtonSelector: '.popup__save-button',
-  inactiveButtonClass: 'popup__save-button_inactive',
-  inputErrorClass: 'popup__placeholder_type_error',
-  errorClass: 'popup__placeholder-error_active'
-}
-
-class FormValidator {
+export default class FormValidator {
   constructor(data, formElement) {
     this._submitButton = formElement.querySelector(data.submitButtonSelector)
     this._inactiveButtonClass = data.inactiveButtonClass
@@ -84,6 +73,11 @@ class FormValidator {
   enableValidation() {
     this._toggleButtonState()
     this._setEventListeners()
+  }
+
+  disableSubmitButton() {
+    this._submitButton.classList.add(this._inactiveButtonClass);
+    this._submitButton.disbaled = true;
   }
 }
 

@@ -11,9 +11,7 @@ export default class PopupRemove extends Popup {
     super.setEventListeners()
     this._popup.querySelector('.popup__delete-form').addEventListener('submit', (event) => {
       event.preventDefault()
-      this._api.removeCard(id)
-      this._submit()
-      card.querySelector('.element__delete-button').closest('.element').remove()
+      this._submit(id, card)
     })
   }
 }
