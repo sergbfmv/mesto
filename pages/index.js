@@ -40,6 +40,7 @@ const editAvatar = document.querySelector('.profile__avatar')
 const avatarLink = document.querySelector('.popup__placeholder_type_avatar-link')
 const formAvatar = document.querySelector('.popup__form_type_edit-avatar')
 const user = new UserInfo({name: '.profile__title', info: '.profile__subtitle', avatar: '.profile__avatar'})
+const deleteButton = document.querySelector('.element__delete-button')
 let userId = ''
 let cardsList = ''
 
@@ -55,17 +56,17 @@ validatorFormAvatar.enableValidation()
 const popupImage = new PopupWithImage ('.popup_type_image')
 popupImage.setEventListeners()
 
-api.getProfileInfo()
-  .then((data) => {
-    user.setUserInfo(data.name, data.about, data.avatar)
-    userId = data._id
-})
-  .catch(err => Promise.reject(err))
+function getProfieId(id) {
+  userId = id
+}
 
-api.getInitialCards()
-  .then((data) => {
-     cardsList = new Section({
-      items: data,
+Promise.all([api.getProfileInfo(), api.getInitialCards()])
+  .then(([userData, cards]) => {
+    user.setUserInfo(userData.name, userData.about, userData.avatar)
+    getProfieId(userData._id)
+
+    cardsList = new Section({
+      items: cards,
       renderer: (item) => {
         const card = createCard(item, userId)
         const addCard = card.generateCard(item)
@@ -73,8 +74,8 @@ api.getInitialCards()
       },
     }, '.elements')
   cardsList.renderItems()
-})
-.catch(err => Promise.reject(err))
+  })
+  .catch(err => Promise.reject(err))
 
 const confirmPopup = new PopupRemove('.popup_type_remove', (id, card) => {
   api.removeCard(id)
@@ -84,6 +85,8 @@ const confirmPopup = new PopupRemove('.popup_type_remove', (id, card) => {
     })
     .catch(err => Promise.reject(err))
 }, api)
+
+confirmPopup.setEventListeners()
 
 const editAvatarPopup = new PopupWithForm('.popup_type_edit-avatar', (inputs) => {
   api.changeAvatar(inputs.link)
@@ -118,9 +121,8 @@ function handleDeleteLike(card) {
 function createCard(item, id) {
   return new Card (item, '.element-template_type_card',  (text, image) => {
     popupImage.open(text, image)
-  },(id, element, card) => {
-    confirmPopup.open()
-    confirmPopup.setEventListeners(id, element, card)
+  },(id, element) => {
+    confirmPopup.open(id, element)
   }, id, handleLikeCard, handleDeleteLike)
 }
 
@@ -159,6 +161,7 @@ const editPopup = new PopupWithForm ('.popup_type_edit', (placeholders) => {
 editPopup.setEventListeners()
 editButton.addEventListener('click', () => {
   editPopup.open()
-  placeholderName.value = user.getUserInfo().name
-  placeholderInfo.value = user.getUserInfo().info
+  const userData = user.getUserInfo()
+  placeholderName.value = userData.name
+  placeholderInfo.value = userData.info
 })
