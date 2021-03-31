@@ -9,6 +9,7 @@
 - адаптивная вёрсткаб под различную ширину экранов;
 - работа с макетом в Figma;
 - javaScript;
+- ООП;
 
 Ссылка на сайт в GitHub Pages: https://sergbfmv.github.io/mesto/
 
